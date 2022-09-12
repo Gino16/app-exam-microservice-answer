@@ -1,14 +1,14 @@
 package com.exams.microservices.appexammicroservicceanswer.models.repositories;
 
 import com.exams.microservices.appexammicroservicceanswer.models.entities.Answer;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.mongodb.repository.Query;
 
-public interface AnswerRepository extends CrudRepository<Answer, Long> {
+public interface AnswerRepository extends MongoRepository<Answer, String> {
 
-  @Query("SELECT a FROM Answer a JOIN FETCH a.student s JOIN FETCH a.question q JOIN FETCH q.exam e WHERE s.id = ?1 AND e.id = ?2")
-  public Iterable<Answer> findAnswersByStudentByQuestion(Long studentId, Long examId);
+  @Query("{'studentId': ?0, 'questionId': {$in: ?1}}")
+  public Iterable<Answer> findAnswerByStudentAndQuestion(Long studentId, Iterable<Long> questionId);
 
-  @Query("SELECT e.id FROM Answer a JOIN a.student s JOIN a.question q JOIN q.exam e WHERE s.id = ?1 GROUP BY e.id")
-  public Iterable<Long> findExamsIdsWithAnswersByStudent(Long studentId);
+  @Query("{'studentId': ?0}")
+  public Iterable<Answer> findByStudentId(Long studentId);
 }

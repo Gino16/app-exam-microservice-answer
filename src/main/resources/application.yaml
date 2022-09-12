@@ -2,7 +2,8 @@ spring:
   application:
     name: answer-service
   config:
-      import: configserver:http://localhost:8888
+    import: configserver:http://localhost:8888
   cloud:
     config:
       profile: dev
+      label: db-per-service
